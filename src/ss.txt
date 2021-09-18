@@ -1,0 +1,96 @@
+        data(){
+            return {
+                    name:"Name recipe",
+                    recipe:{
+                            name:'',
+                            phone:'ddd'
+                    },
+                    getRecipe:[],
+                    rec:'',
+                    rec2:''
+            }
+        },
+        methods: {
+            editRecipe(id) {
+                    let message = prompt("Redaktirovat r","")
+                    this.name = localStorage.getItem('key')
+                    this.phone = message
+                    db.collection('recipe').doc(id)
+                    .update(this.recipe).then(()=>{
+                        console.log("uspex")
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+            },
+
+
+                funs(){
+                        window.onload =() => {
+                  let data1 = localStorage.getItem("key")
+                  let data2 = localStorage.getItem("key2")
+                  this.recipe.name = data1
+                this.recipe.phone = data2
+               db.collection('recipe').add(this.recipe).then(()=>{ 
+                
+                console.log(datas)
+               
+              }).catch((error) => {
+                  console.log(error)
+              })
+                        }
+                },
+             showMenu(event) {
+                 console.log(event)
+                    event.preventDefault();
+                    
+                         this.rec = prompt('Введите имя рецепта',"")
+                        if(this.rec == null || this.rec =="") {
+                            alert('Поле не должно быть пустым')
+                        }
+                        else {    
+                             localStorage.setItem("key",this.rec)  
+                            localStorage.setItem("key2",this.rec2)
+               
+                        }
+                },
+            
+            onSubmit(event) {
+                event.preventDefault();
+                
+               db.collection('recipe').add(this.recipe).then(()=>{ 
+                this.recipe.name = ''
+                this.recipe.phone = ''
+              
+              }).catch((error) => {
+                  console.log(error)
+              })
+           },
+
+            deleteRecipe(id) {
+                if(window.confirm("Вы хотите удалит")){
+                    db.collection('recipe').doc(id).delete().then(()=>{
+                        console.log('deleted')
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+                }
+         
+            }
+        },
+
+        created() {
+        
+            db.collection('recipe').onSnapshot((snapshotChange)=>{
+                this.getRecipe = [];
+               snapshotChange.forEach((doc)=> {
+                   this.getRecipe.push({
+                       key:doc.id,
+                       name:doc.data().name,
+                       phone:doc.data().phone
+                   })
+               }) 
+          })
+        this.funs()
+},
